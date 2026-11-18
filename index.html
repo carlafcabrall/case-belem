@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Belém Auto Repasse | Ana Carla Cabral</title>
+<meta name="description" content="Case de produto com IA: app que reúne num só lugar a consulta do veículo (placa, dados e FIPE) e a criação do anúncio para um negócio de repasse em Belém (PA). Da placa e de um áudio saem ficha conferida, anúncio do WhatsApp, artes com fotos e histórico FIPE, com regras que bloqueiam suposições e alucinações. Por Ana Carla Cabral.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://carlafcabrall.github.io/case-belem/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://carlafcabrall.github.io/case-belem/">
+<meta property="og:title" content="Belém Auto Repasse: consulta e anúncio do veículo, num só lugar">
+<meta property="og:description" content="App com IA em uso real num negócio de repasse em Belém (PA): da placa e de um áudio saem ficha conferida, anúncio do WhatsApp, artes com fotos e histórico FIPE, com regras que bloqueiam suposições e alucinações.">
+<meta property="og:image" content="https://carlafcabrall.github.io/case-belem/imagens/compartilhar.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,700&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Identidade do app (D-92): preto e dourado */
+  --preto:#0D0D0D;
+  --grafite:#1A1A1A;
+  --borda-escura:#4A3F2A;
+  --ouro:#D4AF37;
+  --ouro-2:#B8863B;
+  --ouro-texto:#8A6420;   /* dourado legível sobre branco (tema claro do app) */
+  --bege:#F5E6C8;
+  --bege-suave:#B8AD9A;
+  --branco:#FFFFFF;
+  --papel:#F6F2EA;        /* superfície do tema claro do app */
+  --linha:#E0D6C2;
+  --texto:#111111;
+  --texto-suave:#5A5248;
+  --ok:#2E6B3F;
+  --alerta:#9A5B00;
+  --medida:66ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--branco);color:var(--texto);font:400 16.5px/1.65 "Montserrat",system-ui,sans-serif}
+h1,h2{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:700;line-height:1.05;margin:0}
+h2{font-size:clamp(2rem,4vw,2.9rem);margin-bottom:.5em}
+h3{font-size:1.08rem;font-weight:700;line-height:1.3;margin:0 0 .35em}
+p{margin:0 0 1em;max-width:var(--medida)}
+ul,ol{max-width:var(--medida)}
+a{color:inherit;text-decoration-color:var(--ouro);text-underline-offset:3px;text-decoration-thickness:2px}
+a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--ouro);outline-offset:3px;border-radius:3px}
+.envoltorio{max-width:1160px;margin:0 auto;padding:0 24px}
+section{padding:80px 0}
+section+section{border-top:1px solid var(--linha)}
+.lead{font-size:1.12rem;max-width:58ch}
+.suave{color:var(--texto-suave)}
+
+/* ---------- Abertura (fundo preto, como o app) ---------- */
+.abertura{background:var(--preto);color:var(--bege);padding:40px 0 72px;position:relative;overflow:hidden}
+.abertura::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--ouro) 20%,var(--ouro-2) 80%,transparent)}
+.voltar{margin:0 0 18px;font-size:.85rem;max-width:none}
+.voltar a{color:var(--bege-suave)}
+.topo{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:48px;font-size:.88rem;color:var(--bege-suave)}
+.topo img{height:64px;width:auto;display:block}
+.abertura h1{font-size:clamp(2.6rem,6.4vw,4.8rem);color:var(--ouro);max-width:16ch}
+.abertura .tese{font-size:clamp(1.05rem,2vw,1.25rem);max-width:56ch;margin:22px 0 44px;color:var(--bege)}
+.trilha{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:16px;align-items:stretch}
+.painel{border-radius:14px;padding:20px;display:flex;flex-direction:column}
+.painel .titulo{font-size:.82rem;font-weight:600;color:var(--bege-suave);margin:0 0 12px}
+.fala{background:var(--grafite);border:1px solid var(--borda-escura)}
+.fala blockquote{margin:0;font-size:1rem;line-height:1.75;color:var(--bege)}
+mark{background:transparent;color:#fff;border-bottom:2px solid var(--ouro);padding:0 1px;transition:background-color .15s}
+mark.ativo{background:rgba(212,175,55,.35)}
+.nota{font-size:.78rem;color:var(--bege-suave);margin:auto 0 0;padding-top:14px}
+.ficha{background:var(--papel);color:var(--texto)}
+.ficha .titulo{color:var(--texto-suave)}
+.veiculo{display:flex;gap:12px;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--linha)}
+.placa{flex:none;width:104px;border:2px solid #222;border-radius:6px;background:#fff;text-align:center;overflow:hidden;font-weight:700}
+.placa span{display:block;background:#1F4FA3;color:#fff;font-size:.55rem;letter-spacing:.08em;padding:1px 0}
+.placa b{display:block;font-size:1.2rem;letter-spacing:.05em;padding:1px 0 2px}
+.veiculo p{margin:0;font-size:.86rem;line-height:1.35}
+.veiculo small{color:var(--texto-suave)}
+.campos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.campos li{padding:6px 7px;border-radius:8px;line-height:1.25;font-size:.86rem}
+.campos li[data-trecho]:hover,.campos li.ativo{background:#EFE3C6}
+.campos .rot{display:block;font-size:.72rem;color:var(--texto-suave)}
+.campos .val{font-weight:700}
+.campos .cit{display:block;font-size:.72rem;color:var(--ouro-texto);font-style:italic}
+.campos .nao-falado{font-weight:700;color:var(--alerta)}
+.campos .largo{grid-column:1/-1}
+.anuncio{background:#E7F3E3;color:#1B2A1B;font-size:.84rem;line-height:1.5}
+.anuncio .titulo{color:#4B5E47}
+.anuncio .bolha{background:#fff;border-radius:10px 10px 10px 2px;padding:12px 14px;white-space:pre-line;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.anuncio .nota{color:#4B5E47}
+.legenda{font-size:.86rem;color:var(--bege-suave);margin:18px 0 0;max-width:none}
+
+/* ---------- Faixa de situação ---------- */
+.situacao{background:var(--papel);padding:26px 0;border-top:0}
+.situacao ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 30px;font-size:.93rem;max-width:none}
+.situacao li::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);margin-right:8px;vertical-align:1px}
+
+/* ---------- Antes e depois ---------- */
+.processo{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:30px;align-items:start}
+.processo .coluna{border-radius:14px;padding:24px}
+.antes{background:var(--papel)}
+.depois{background:var(--preto);color:var(--bege)}
+.depois h3{color:var(--ouro)}
+.processo ol{margin:12px 0 0;padding-left:1.3em}
+.processo li{margin-bottom:.55em}
+.processo li::marker{font-weight:700;color:var(--ouro-texto)}
+.depois li::marker{color:var(--ouro)}
+.processo .rodape{font-size:.9rem;margin:14px 0 0}
+.depois .rodape{color:var(--bege-suave)}
+
+/* ---------- Fluxo ---------- */
+.fluxo{list-style:none;counter-reset:passo;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:14px;overflow:hidden;max-width:none}
+.fluxo li{counter-increment:passo;background:var(--branco);padding:22px}
+.fluxo li::before{content:counter(passo);font:italic 700 2rem/1 "Bodoni Moda",Georgia,serif;color:var(--ouro-texto);display:block;margin-bottom:8px}
+.fluxo p{font-size:.93rem;margin:0}
+
+/* ---------- Regra do falado ---------- */
+.regra{background:var(--preto);color:var(--bege)}
+.regra h2{color:var(--ouro)}
+.estados{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0 40px}
+.estado{border:1px solid var(--borda-escura);border-radius:14px;padding:22px;background:var(--grafite)}
+.estado .selo{display:inline-block;font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:10px}
+.estado.falta .selo{color:var(--ouro)}
+.estado p{font-size:.93rem;margin:0 0 .6em;color:var(--bege)}
+.estado .no-anuncio{font-size:.86rem;color:var(--bege-suave);border-top:1px solid var(--borda-escura);padding-top:10px;margin-top:10px}
+.travas{margin:0;padding-left:1.3em;max-width:72ch}
+.travas li{margin-bottom:.8em}
+.travas li::marker{color:var(--ouro);font-weight:700}
+.travas strong{color:#fff}
+.grupos{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;margin:30px 0 24px}
+.grupo{border:1px solid var(--borda-escura);border-radius:14px;padding:22px;background:var(--grafite)}
+.grupo h3{color:var(--ouro);margin-bottom:12px}
+.grupo ul{margin:0;padding-left:1.1em}
+.grupo li{font-size:.9rem;margin-bottom:.7em;color:var(--bege)}
+.grupo li::marker{color:var(--ouro)}
+.grupo strong{color:#fff}
+.estados-curto{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:.88rem;color:var(--bege-suave)}
+.estados-curto p{margin:0;max-width:none}
+.estados-curto .selo{font-weight:700;color:#fff;margin-right:4px}
+.estados-curto .selo.ouro{color:var(--ouro)}
+.prova{margin-top:30px;padding:18px 20px;border-left:3px solid var(--ouro);background:var(--grafite);border-radius:0 10px 10px 0;max-width:72ch}
+.prova p{margin:0;font-size:.95rem}
+
+/* ---------- Além da ficha ---------- */
+.recursos{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:28px}
+.recurso figure{margin:0 0 16px;border-radius:12px;overflow:hidden;background:var(--preto);height:360px;display:flex;align-items:center;justify-content:center}
+.recurso figure img{width:100%;height:100%;object-fit:contain;display:block}
+.recurso figure.texto{align-items:flex-start;padding:18px;background:#E7F3E3}
+.recurso figure.grafico{padding:18px;flex-direction:column;align-items:stretch;justify-content:center;background:var(--papel)}
+.recurso p{font-size:.93rem}
+.mini-bolha{background:#fff;border-radius:10px;padding:12px 14px;font-size:.78rem;line-height:1.5;white-space:pre-line;color:#1B2A1B;width:100%}
+.frase-fipe{font-size:.88rem;margin:12px 0 6px}
+.aviso-fipe{font-size:.76rem;color:var(--texto-suave);margin:0}
+
+/* ---------- Decisões ---------- */
+.decisoes{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 56px;margin-top:16px}
+.decisoes p{font-size:.95rem}
+.decisoes .dado{font-size:.87rem;color:var(--texto-suave);border-left:3px solid var(--ouro);padding-left:12px}
+
+/* ---------- Custos ---------- */
+.custos{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start;margin-top:12px}
+.tabela{width:100%;border-collapse:collapse;font-size:.95rem}
+.tabela th,.tabela td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--linha);vertical-align:top}
+.tabela th{font-weight:600;color:var(--texto-suave);font-size:.85rem}
+.tabela td:last-child,.tabela th:last-child{text-align:right;white-space:nowrap}
+.tabela tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--texto)}
+.custos ul{margin:0;padding-left:1.1em}
+.custos li{margin-bottom:.7em;font-size:.95rem}
+
+/* ---------- Como construí ---------- */
+.numeros{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin:30px 0 40px;padding:0;list-style:none;max-width:none}
+.numeros b{display:block;font:italic 700 2.8rem/1 "Bodoni Moda",Georgia,serif;color:var(--ouro-texto)}
+.numeros span{font-size:.88rem;color:var(--texto-suave)}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.duas ul{margin:0;padding-left:1.1em}
+.duas li{margin-bottom:.45em;font-size:.95rem}
+.ferramentas{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:8px 0 0}
+.ferramentas li{border:1px solid var(--linha);border-radius:6px;padding:3px 10px;font-size:.86rem;margin:0}
+
+/* ---------- Como trabalho ---------- */
+.atributos{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.atributos p{font-size:.95rem}
+
+/* ---------- Vídeo (vertical, 9:16) ---------- */
+.video-area{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:48px;align-items:center}
+.video{aspect-ratio:9/16;width:100%;max-width:360px;margin:0 auto;border-radius:14px;overflow:hidden;background:var(--preto)}
+.video iframe{width:100%;height:100%;border:0;display:block}
+.reserva{font-size:.9rem;margin-top:16px}
+
+/* ---------- Tempo por anúncio ---------- */
+.tempo{font:italic 700 1.5rem/1.1 "Bodoni Moda",Georgia,serif;color:var(--ouro-texto);margin:0 0 8px}
+.depois .tempo{color:var(--ouro)}
+.medicao{font-size:.9rem;color:var(--texto-suave);margin:18px 0 0;max-width:none}
+
+footer{background:var(--preto);color:var(--bege);padding:56px 0}
+footer h2{color:var(--ouro)}
+footer p{color:var(--bege-suave)}
+footer a{color:var(--bege)}
+
+@media (max-width:980px){
+  .trilha{grid-template-columns:1fr 1fr}
+  .anuncio{grid-column:1/-1}
+  .fluxo{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .trilha,.processo,.grupos,.recursos,.decisoes,.custos,.duas,.atributos,.video-area{grid-template-columns:1fr}
+  .video-area{gap:24px}
+  .numeros{grid-template-columns:1fr 1fr}
+  section{padding:60px 0}
+  .topo{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:460px){
+  .envoltorio{padding:0 16px}
+  .fluxo{grid-template-columns:1fr}
+  .campos{grid-template-columns:1fr}
+  .painel{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="abertura">
+  <div class="envoltorio">
+    <div class="topo">
+      <img src="imagens/logo-belem-auto-repasse.png" alt="Logo Belém Auto Repasse" width="142" height="64">
+      <span>Case de produto com IA, por <strong style="color:var(--bege)">Ana Carla Cabral</strong>, Engenharia de Produção (CESUPA)</span>
+    </div>
+    <h1>Consulta e anúncio do veículo, num só lugar</h1>
+    <p class="tese">Meu pai trabalha com repasse de veículos em Belém (PA), com mais de 20 carros por semana. Para cada carro, ele consultava a placa e a FIPE num app, acompanhava a variação de preço em outro e digitava o anúncio à mão. Conduzi, como dona do produto, um app que reúne tudo isso num só lugar: ele digita a placa, fala sobre o carro, confere e recebe a ficha, o anúncio do WhatsApp, as artes com fotos e o histórico FIPE.</p>
+
+    <div class="trilha">
+      <div class="painel fala">
+        <p class="titulo">1. O que ele fala no áudio</p>
+        <blockquote>
+          “Saveiro cabine dupla, tá com <mark data-id="km">98 mil km</mark>. <mark data-id="lacrado">Lacrado</mark>, <mark data-id="original">todo original</mark>, <mark data-id="revisao">revisão na CSS</mark>. <mark data-id="ipva">IPVA 26 pago</mark>, tem <mark data-id="chave">manual e chave reserva</mark>. Pra fazer: <mark data-id="fazer">pintar o para-choque e trocar os pneus de trás</mark>. A FIPE tá uns 60 mil, <mark data-id="preco">faço 48.900</mark>.”
+        </blockquote>
+        <p class="nota">Narração ilustrativa, no jeito de falar do usuário. Placa e valores fictícios.</p>
+      </div>
+
+      <div class="painel ficha">
+        <p class="titulo">2. O que ele confere</p>
+        <div class="veiculo">
+          <div class="placa" aria-label="Placa de exemplo BRA2E19"><span>BRASIL</span><b>BRA2E19</b></div>
+          <p><strong>VW Saveiro CD 1.6</strong><br><small>Dados e FIPE vêm da consulta da placa</small></p>
+        </div>
+        <ul class="campos">
+          <li data-trecho="preco" tabindex="0"><span class="rot">Preço de repasse</span><span class="val">R$ 48.900</span><span class="cit">“faço 48.900”</span></li>
+          <li data-trecho="km" tabindex="0"><span class="rot">Quilometragem</span><span class="val">98.000 km</span><span class="cit">“98 mil km”</span></li>
+          <li data-trecho="ipva" tabindex="0"><span class="rot">IPVA</span><span class="val">2026 pago</span><span class="cit">“IPVA 26 pago”</span></li>
+          <li data-trecho="lacrado" tabindex="0"><span class="rot">Lacrado</span><span class="val">Sim</span><span class="cit">“Lacrado”</span></li>
+          <li data-trecho="original" tabindex="0"><span class="rot">Todo original</span><span class="val">Sim</span><span class="cit">“todo original”</span></li>
+          <li data-trecho="revisao" tabindex="0"><span class="rot">Revisão na concessionária</span><span class="val">Sim</span><span class="cit">“revisão na CSS”</span></li>
+          <li class="largo" data-trecho="chave" tabindex="0"><span class="rot">Manual e chave reserva</span><span class="val">Sim</span><span class="cit">“manual e chave reserva”</span></li>
+          <li class="largo" data-trecho="fazer" tabindex="0"><span class="rot">A fazer</span><span class="val">Pintar o para-choque; trocar os pneus traseiros</span><span class="cit">“pintar o para-choque e trocar os pneus de trás”</span></li>
+          <li class="largo"><span class="rot">Vistoria cautelar</span><span class="nao-falado">Não falado</span><span class="cit" style="color:var(--texto-suave);font-style:normal">Não foi dito, então o app não supõe nada</span></li>
+        </ul>
+      </div>
+
+      <div class="painel anuncio">
+        <p class="titulo">3. O anúncio que sai</p>
+        <div class="bolha"><strong>VOLKSWAGEN SAVEIRO CD 1.6</strong>
+📅 2018/19
+🛣️ 98.000 km
+
+✅ Lacrado
+✅ Todo original
+✅ Revisões na concessionária
+✅ IPVA 2026 pago
+✅ Manual
+✅ Chave reserva
+
+🔧 <strong>FAZER:</strong>
+• Pintar o para-choque
+• Trocar os pneus traseiros
+
+FIPE (nov/2026): R$ 61.240
+<strong>PREÇO NO REPASSE: R$ 48.900</strong>
+💰 R$ 12.340 abaixo da FIPE (20,2%)</div>
+        <p class="nota">A cautelar não foi falada: no anúncio, ela simplesmente não aparece.</p>
+      </div>
+    </div>
+    <p class="legenda">Passe o mouse num campo da ficha para ver de que trecho da fala ele saiu.</p>
+  </div>
+</header>
+
+<div class="situacao">
+  <div class="envoltorio">
+    <ul>
+      <li>Publicado na web, com login, porque trabalha com dados reais do negócio</li>
+      <li>Todas as funções testadas no iPhone, com placas e narrações reais</li>
+      <li>Construído entre 30/10 e 07/11/2026 e já em uso no dia a dia</li>
+    </ul>
+  </div>
+</div>
+
+<main>
+
+<section id="problema">
+  <div class="envoltorio">
+    <h2>O problema: consulta e anúncio em lugares separados</h2>
+    <p class="lead">No repasse, o dinheiro está na negociação: comprar bem, vender rápido e manter a relação com os lojistas. Mas, com mais de 20 carros por semana, boa parte do dia do meu pai ia para um trabalho operacional que se repetia carro a carro, espalhado entre aplicativos diferentes.</p>
+    <p>Olhei para isso como engenheira de produção: mapeei o processo, separei o que exigia o julgamento dele do que era repetição e desenhei o app para tirar dele só a repetição. Toda decisão continua sendo dele.</p>
+
+    <div class="processo">
+      <div class="coluna antes">
+        <p class="tempo">8 a 10 min por anúncio</p>
+        <h3>Antes: consulta num app, anúncio à mão</h3>
+        <ol>
+          <li>Consultar a placa e o preço FIPE juntos, num app da Tabela FIPE.</li>
+          <li>Digitar o anúncio do WhatsApp à mão, item por item: não havia ferramenta para isso.</li>
+          <li>Fazer à parte a conta da diferença para a FIPE, o principal argumento para o lojista.</li>
+          <li>Mandar as fotos soltas no grupo, sem arte.</li>
+        </ol>
+      </div>
+      <div class="coluna depois">
+        <p class="tempo">4 a 5 min por anúncio</p>
+        <h3>Depois: num só app, duas ações e uma conferência</h3>
+        <ol>
+          <li>Digitar a placa.</li>
+          <li>Falar sobre o carro, do jeito que ele já fala com os compradores.</li>
+          <li>Conferir o resumo e tocar em “Confirmar e salvar ficha”.</li>
+        </ol>
+        <p class="rodape">A ficha, o anúncio com a diferença para a FIPE já calculada e o histórico de preço ficam no mesmo lugar, a partir dos dados que ele conferiu. A arte com as fotos é uma novidade: antes ela não existia.</p>
+      </div>
+    </div>
+    <p class="medicao">Tempo por anúncio: de 8 a 10 para 4 a 5 minutos (6 anúncios cronometrados em cada método, nov/2026).</p>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <div class="envoltorio">
+    <h2>Como funciona</h2>
+    <p>Seis passos na aba Assistente, todos funcionando no app publicado.</p>
+    <ol class="fluxo">
+      <li><h3>Placa</h3><p>Consulta os dados do veículo e as versões da Tabela FIPE na API Placa FIPE. Quando há mais de uma versão possível, quem escolhe é o usuário.</p></li>
+      <li><h3>FIPE conferida</h3><p>O valor é conferido numa segunda fonte (Parallelum). Se divergir, o app avisa e nunca troca o valor sozinho.</p></li>
+      <li><h3>Áudio</h3><p>Gravação no iPhone que resiste a ligação e tela bloqueada, com até dois complementos para o que ele lembrar depois.</p></li>
+      <li><h3>Transcrição</h3><p>OpenAI gpt-transcribe, com o vocabulário do setor: “faço”, “lacrado”, “revisão na CSS”, “cautelar”.</p></li>
+      <li><h3>Leitura pela IA</h3><p>O modelo gpt-6-luna transforma a fala em campos estruturados e cita o trecho exato de onde tirou cada valor.</p></li>
+      <li><h3>Resumo e ficha</h3><p>Um resumo único com tudo que veio da placa e do áudio. O app só pergunta o que ficou ambíguo ou contraditório; um toque confirma e salva.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="regras" class="regra">
+  <div class="envoltorio">
+    <h2>Regras de confiabilidade</h2>
+    <p class="lead">Num anúncio de carro, um dado suposto vira promessa ao comprador. Por isso o app segue um conjunto de regras: a IA não completa o que não foi dito, cada valor tem origem conferível e toda decisão fica com o usuário.</p>
+
+    <div class="grupos">
+      <div class="grupo">
+        <h3>Na leitura do áudio</h3>
+        <ul>
+          <li><strong>A instrução proíbe completar.</strong> A IA usa só o que foi falado: nunca inventa, completa ou supõe.</li>
+          <li><strong>Cada valor precisa de prova.</strong> Junto de cada valor vem o trecho exato da fala. O app confere se o trecho existe na transcrição; se não existir, o valor é descartado antes de chegar à tela.</li>
+          <li><strong>Não falado não é “não”.</strong> O que ele não mencionou fica em aberto e não aparece no anúncio.</li>
+          <li><strong>Na dúvida, a pessoa decide.</strong> Fala ambígua (“faço 45, 46 mil”) ou áudios que se contradizem viram pergunta.</li>
+          <li><strong>Correções não são sobrescritas.</strong> Se ele corrigiu um valor e um áudio novo disser outra coisa, a diferença vira pergunta.</li>
+        </ul>
+      </div>
+      <div class="grupo">
+        <h3>Nos dados do veículo</h3>
+        <ul>
+          <li><strong>FIPE conferida em segunda fonte.</strong> O valor da API Placa FIPE é comparado com a Parallelum. Se divergir, o app avisa e nunca troca o valor sozinho.</li>
+          <li><strong>A versão é escolha do usuário.</strong> Quando a placa corresponde a mais de uma versão na Tabela FIPE, o app mostra as opções e não escolhe por ele.</li>
+        </ul>
+      </div>
+      <div class="grupo">
+        <h3>No que sai do app</h3>
+        <ul>
+          <li><strong>IA só onde ela é necessária.</strong> Anúncio e arte são montados por regras fixas, sem IA: os números saem exatamente como foram conferidos.</li>
+          <li><strong>Dados pessoais bloqueados.</strong> Nome e telefone do dono ficam fora de qualquer campo, e telefones são removidos dos trechos citados.</li>
+          <li><strong>Nada é enviado sem ele.</strong> O app prepara; quem publica no grupo é o usuário.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="estados-curto" aria-label="Os três estados de cada item">
+      <p><span class="selo">Sim</span> foi dito que tem → aparece no anúncio com ✅</p>
+      <p><span class="selo">Não</span> foi dito que não tem → aparece como “não tem”, por transparência com o lojista</p>
+      <p><span class="selo ouro">Não falado</span> ninguém disse → fica em aberto na conferência e não aparece no anúncio</p>
+    </div>
+
+    <div class="prova">
+      <p><strong>Avaliação antes de ir para o usuário:</strong> um gabarito com 11 casos, preparado pelo agente e conferido por mim (4 narrações reais do meu pai e 7 casos difíceis feitos de propósito: autocorreção no meio da fala, contradição entre áudios, telefone do dono, reparo que já foi feito). Avaliei dois modelos da OpenAI contra ele; os dois tiveram 0 erros graves e 0 erros menores.</p>
+    </div>
+  </div>
+</section>
+
+<section id="alem-da-ficha">
+  <div class="envoltorio">
+    <h2>Da ficha à divulgação</h2>
+    <p>Com a ficha salva, o anúncio, as artes e o histórico de preço ficam no mesmo app. Nos dois lugares em que o preço importa, o app faz a mesma conta: a diferença entre dois valores, em reais e em porcentagem.</p>
+    <div class="recursos">
+      <article class="recurso">
+        <figure class="texto" aria-label="Exemplo de anúncio do WhatsApp"><div class="mini-bolha"><strong>VOLKSWAGEN SAVEIRO CD 1.6</strong>
+📅 2018/19
+🛣️ 98.000 km
+✅ Lacrado
+✅ IPVA 2026 pago
+🔧 <strong>FAZER:</strong> …
+FIPE (nov/2026): R$ 61.240
+<strong>PREÇO NO REPASSE: R$ 48.900</strong>
+💰 R$ 12.340 abaixo da FIPE (20,2%)</div></figure>
+        <h3>Anúncio do WhatsApp</h3>
+        <p>Com a ficha salva, ele ainda pode ajustar dados como o preço e a quilometragem. Um toque em “Gerar anúncio” monta o texto já no formato do grupo, num molde fixo, com o argumento de lucro do lojista: quanto o preço de repasse está abaixo da FIPE, em reais e em porcentagem (no exemplo, R$ 61.240 − R$ 48.900 = R$ 12.340, ou 20,2%). Ele copia e cola no WhatsApp, ou toca em Compartilhar e escolhe direto o grupo de repasse. Nada é enviado sem ele.</p>
+      </article>
+      <article class="recurso">
+        <figure><img src="imagens/molde-arte.jpg" alt="Arte pronta no molde preto e dourado da Belém Auto Repasse: foto da Fiat Toro Volcano no topo, faixa com ano e quilometragem, nome do carro e quadros de preço e FIPE"></figure>
+        <h3>Arte com fotos</h3>
+        <p>Antes do app, as fotos iam soltas para o grupo. Agora ele sobe até 6 fotos do carro e escolhe quais entram no molde da marca. Pode ser só a primeira, com as outras indo como foram tiradas. Cada foto escolhida vira uma arte com o ano, a quilometragem, o preço e a FIPE da ficha, e ele ajusta o enquadramento com os dedos. O botão Compartilhar abre o menu do iPhone e manda tudo direto para o WhatsApp, inclusive para o grupo de repasse. As fotos nunca saem do aparelho.</p>
+      </article>
+      <article class="recurso">
+        <figure class="grafico" aria-label="Exemplo de resumo do histórico FIPE">
+          <svg viewBox="0 0 300 120" role="img" aria-label="Linha de preço FIPE em queda ao longo de 12 meses" style="width:100%;height:auto">
+            <line x1="0" y1="110" x2="300" y2="110" stroke="#E0D6C2"/>
+            <polyline fill="none" stroke="#8A6420" stroke-width="3" stroke-linejoin="round" points="5,20 30,26 55,30 80,34 105,40 130,47 155,52 180,58 205,64 230,57 255,72 280,82 295,86"/>
+            <circle cx="295" cy="86" r="5" fill="#D4AF37"/>
+          </svg>
+          <p class="frase-fipe">“Em 12 meses (nov/2025 → nov/2026), a FIPE foi de R$ 92.400 para R$ 85.636: −R$ 6.764 (−7,3%).”</p>
+          <p class="aviso-fipe">Variação nacional da Tabela FIPE. Não indica valorização no Pará.</p>
+        </figure>
+        <h3>Mercado: histórico FIPE</h3>
+        <p>Antes, ele via a variação de preço em outro app. Agora o histórico fica no mesmo lugar da ficha: gráfico com todo o período disponível (142 meses numa consulta real, conferida contra a segunda fonte), recortes de 6, 12 e 24 meses e uma frase de resumo com a variação em reais e em porcentagem. O histórico fica guardado na ficha e não gasta nova consulta.</p>
+        <p class="suave" style="font-size:.82rem">Exemplo do formato da frase gerada pelo app. O desenho da linha é ilustrativo.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="envoltorio video-area">
+    <div>
+      <h2>O app funcionando</h2>
+      <p>Demonstração gravada no iPhone, do jeito que o usuário usa: da placa ao anúncio, à arte e ao histórico FIPE.</p>
+      <p class="reserva"><a href="https://youtube.com/shorts/XlIm7J5bU4o" target="_blank" rel="noopener">Assistir no YouTube</a></p>
+    </div>
+    <div class="video">
+      <iframe src="https://www.youtube.com/embed/XlIm7J5bU4o" title="Belém Auto Repasse: demonstração do app no iPhone" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section id="decisoes">
+  <div class="envoltorio">
+    <h2>Decisões que tornam o app confiável</h2>
+    <p>Cada decisão foi registrada com a sua justificativa. Algumas das que mais pesaram:</p>
+    <div class="decisoes">
+      <article>
+        <h3>Fornecedores escolhidos com critério, nesta ordem</h3>
+        <p>Primeiro os termos de uso e a privacidade, depois o custo e, por fim, o teste com dados reais. Um serviço de transcrição concorrente saiu já no primeiro filtro: o plano grátis não permite uso comercial e, por padrão, usa os áudios para treinar a IA. A OpenAI, que por padrão não usa os dados da API para treinar modelos, passou para o teste com as narrações reais.</p>
+        <p class="dado">Transcrição: 4 narrações reais, com e sem o vocabulário do setor, 0 falhas, 2 a 3 segundos por áudio, US$ 0,025 no teste inteiro.</p>
+      </article>
+      <article>
+        <h3>Mesma precisão, custo 18 vezes menor</h3>
+        <p>Para a leitura da fala, avaliei dois modelos da OpenAI contra o mesmo gabarito de 11 casos, e os dois acertaram todos. Adotei o gpt-6-luna, que entregou a mesma precisão com custo 18 vezes menor. Se ele errar no uso real, a troca para o outro modelo é uma linha de código.</p>
+        <p class="dado">Leitura: cerca de R$ 0,60 por mês para 90 fichas.</p>
+      </article>
+      <article>
+        <h3>Perguntar pouco, conferir sempre</h3>
+        <p>Com mais de 20 carros por semana, confirmar campo por campo seria lento. O app junta placa e áudio num resumo único com um botão Confirmar, e só interrompe quando há ambiguidade ou contradição.</p>
+      </article>
+      <article>
+        <h3>Guardar só o necessário</h3>
+        <p>O áudio e a transcrição são apagados assim que o banco confirma que a ficha foi salva. Chassi e motor aparecem só na tela. As fotos e as artes nunca saem do iPhone. Cada usuário só vê as próprias fichas.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="custos">
+  <div class="envoltorio">
+    <h2>Custo baixo, sem cortar etapas</h2>
+    <p class="lead">O orçamento era de até R$ 100 por mês. Para caber nele sem cortar etapas, reorganizei como elas eram publicadas e onde cada tarefa roda. A operação prevista fica em cerca de R$ 26 por mês.</p>
+    <div class="custos">
+      <table class="tabela">
+        <thead><tr><th>Serviço</th><th>Custo previsto por mês</th></tr></thead>
+        <tbody>
+          <tr><td>API Placa FIPE (20 consultas por dia)</td><td>R$ 14,90</td></tr>
+          <tr><td>OpenAI: transcrição e leitura do áudio</td><td>≈ R$ 10</td></tr>
+          <tr><td>Supabase: banco, login e áudios</td><td>R$ 0</td></tr>
+          <tr><td>Netlify: hospedagem</td><td>R$ 0</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total previsto, para cerca de 90 fichas por mês</td><td>≈ R$ 26</td></tr></tfoot>
+      </table>
+      <ul>
+        <li><strong>Publicações agrupadas.</strong> No plano grátis da Netlify, o que gasta crédito é publicar, não usar o app. As etapas 11, 12 e 13 foram feitas e conferidas no computador e publicadas juntas, de uma vez, para o teste no iPhone. Economia sem pular nenhuma conferência.</li>
+        <li><strong>Sem IA onde regra resolve.</strong> Anúncio e arte por regras fixas: custo zero e resposta instantânea.</li>
+        <li><strong>Nada pago para guardar fotos.</strong> A arte é feita no próprio iPhone.</li>
+        <li><strong>Uma consulta por carro no histórico.</strong> O histórico FIPE fica guardado na ficha, então abrir de novo não gasta consulta.</li>
+        <li><strong>Cópia de segurança sem plano pago.</strong> Exportar todas as fichas em planilha toda semana substitui o plano com backup automático, de cerca de R$ 145 por mês.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="como-construi">
+  <div class="envoltorio">
+    <h2>Como construí</h2>
+    <p>Conduzi o projeto como dona do produto e usei o Claude Code como agente de programação. Eu defino o problema, o escopo, os critérios de aceitação e as decisões; o agente apresenta alternativas, custos e riscos e escreve o código. Uma etapa por vez, e nenhuma avança sem testes executados e sem a minha validação.</p>
+    <ul class="numeros">
+      <li><b>13</b><span>etapas entregues, de 30/10 a 07/11</span></li>
+      <li><b>136</b><span>decisões registradas, cada uma com a sua justificativa</span></li>
+      <li><b>198</b><span>testes automáticos aprovados</span></li>
+      <li><b>11</b><span>casos no gabarito que avaliou a IA</span></li>
+    </ul>
+    <div class="duas">
+      <div>
+        <h3>Ficou de fora, de propósito</h3>
+        <ul>
+          <li>Publicação automática nos grupos: todo material passa pela aprovação dele.</li>
+          <li>Agentes autônomos e ferramentas de automação sem necessidade concreta.</li>
+          <li>Coleta automática de preços em portais de anúncio, que viola os termos de uso.</li>
+          <li>Comparativo de preços no Pará, porque não há fonte confiável. O histórico mostra a variação nacional e diz isso na tela.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Ferramentas (o código foi escrito pelo Claude Code)</h3>
+        <ul class="ferramentas">
+          <li>Claude Code</li><li>OpenAI gpt-transcribe</li><li>OpenAI gpt-6-luna</li><li>API Placa FIPE</li><li>Parallelum (FIPE)</li><li>Next.js e TypeScript</li><li>Supabase</li><li>Netlify</li><li>Vitest</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="resultados">
+  <div class="envoltorio">
+    <h2>Resultados</h2>
+    <p><strong>Tempo por anúncio: de 8 a 10 para 4 a 5 minutos</strong> (6 anúncios cronometrados em cada método, nov/2026).</p>
+    <p>O app já faz parte do dia a dia do negócio. Desde a entrega, <strong>o próprio usuário já criou mais de 15 fichas com placas reais</strong>. Cada conta vê só as próprias fichas.</p>
+    <p>Ele testou cada função e aprovou, e os ajustes que pediu, como o rótulo “PREÇO NO REPASSE” no anúncio, entraram no app.</p>
+  </div>
+</section>
+
+<section id="como-trabalho">
+  <div class="envoltorio">
+    <h2>O que esse projeto mostra sobre como eu trabalho</h2>
+    <div class="atributos">
+      <article>
+        <h3>Construo e aprendo fazendo</h3>
+        <p>Aprendi APIs, saída estruturada e avaliação de modelos construindo uma solução real, testando cedo com o usuário e ajustando a rota a cada etapa.</p>
+      </article>
+      <article>
+        <h3>Uso IA como alavanca do negócio</h3>
+        <p>A IA entra onde resolve um gargalo concreto, a leitura da fala, e fica de fora onde uma regra fixa é mais segura e mais barata.</p>
+      </article>
+      <article>
+        <h3>Busco impacto que se mede</h3>
+        <p>O objetivo é devolver tempo de negociação a um pequeno empreendedor, com custo de cerca de R$ 26 por mês, e não acumular funcionalidades.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <h2>Contato</h2>
+    <p>Ana Carla Cabral, Engenharia de Produção (CESUPA), Belém (PA).</p>
+    <p><a href="mailto:carlafcabrall.1@gmail.com">carlafcabrall.1@gmail.com</a></p>
+    <p><a href="https://www.linkedin.com/in/ana-carla-cabral-725482304">LinkedIn</a></p>
+  </div>
+</footer>
+
+<script>
+// Ao passar o mouse ou focar um campo da ficha, destaca o trecho de origem na fala.
+document.querySelectorAll(".campos li[data-trecho]").forEach(function (item) {
+  var trecho = document.querySelector('mark[data-id="' + item.dataset.trecho + '"]');
+  if (!trecho) return;
+  function liga() { trecho.classList.add("ativo"); item.classList.add("ativo"); }
+  function desliga() { trecho.classList.remove("ativo"); item.classList.remove("ativo"); }
+  item.addEventListener("mouseenter", liga);
+  item.addEventListener("mouseleave", desliga);
+  item.addEventListener("focus", liga);
+  item.addEventListener("blur", desliga);
+});
+</script>
+</body>
+</html>
